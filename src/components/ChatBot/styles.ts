@@ -12,7 +12,7 @@ export default StyleSheet.create({
   botName: {
     textAlignVertical: 'bottom',
   },
-  chatHistory: { marginVertical: 16, flex: 1 },
+  chatHistory: { marginVertical: 16, paddingBottom: 16 },
   chatFooter: {
     flexDirection: 'row',
   },

@@ -11,17 +11,21 @@ import {
 } from 'react-native';
 
 import styles from './styles';
-
-interface ChatMessage {
-  sender: string;
-  message: string;
-}
+import { ChatMessage, Message } from '../ChatMessage';
 
 export const ChatBot: React.FC<ViewProps> = ({
   testID = 'chatBot',
   ...props
 }): React.ReactElement => {
-  const [chatHistory] = useState<ChatMessage[]>([]);
+  const [message, setMessage] = useState('');
+  const [chatHistory, setChatHistory] = useState<Message[]>([]);
+
+  const sendMessage = (): void => {
+    const newMessage: Message = { sender: 'You', message };
+    setChatHistory([...chatHistory, newMessage]);
+    setMessage('');
+  };
+
   return (
     <SafeAreaView {...props} style={styles.container} testID={testID}>
       <View style={styles.chatHeader}>
@@ -35,14 +39,34 @@ export const ChatBot: React.FC<ViewProps> = ({
         </Text>
       </View>
       <FlatList
+        contentContainerStyle={styles.chatHistory}
         testID="chatHistory"
-        renderItem={() => <View />}
+        renderItem={ChatMessage}
         data={chatHistory}
+        ListEmptyComponent={renderEmptyList}
+        keyExtractor={(_, index) => index.toString()}
       />
       <View style={styles.chatFooter}>
-        <TextInput testID="messageField" />
-        <Button title="Send" onPress={() => {}} testID="sendButton" />
+        <TextInput
+          value={message}
+          testID="messageField"
+          onChangeText={setMessage}
+        />
+        <Button
+          disabled={message.length === 0}
+          title="Send"
+          onPress={sendMessage}
+          testID="sendButton"
+        />
       </View>
     </SafeAreaView>
+  );
+};
+
+const renderEmptyList = (): React.ReactElement => {
+  return (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>Your chat history will show here</Text>
+    </View>
   );
 };

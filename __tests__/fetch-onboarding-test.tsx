@@ -1,5 +1,5 @@
 import { act, render } from '@testing-library/react-native';
-import fetchMock from 'fetch-mock';
+import fetchMock, { MockResponse } from 'fetch-mock';
 import 'react-native';
 import React from 'react';
 
@@ -13,28 +13,36 @@ describe('when fetching onboarding', () => {
     fetchMock.reset();
   });
 
-  it('should show success after fake fetch', async () => {
-    const mockResult = {
+  it('should show chatBot after fake fetch', async () => {
+    const mockResult: MockResponse = {
       status: 200,
-      json: {
-        text: 'success',
+      body: {
+        text: 'hello',
       },
     };
     fetchMock.get(ENDPOINT, mockResult);
 
-    const { getByText } = render(<App />);
+    const { getByTestId } = render(<App />);
     await act(async () => {});
 
-    expect(getByText(JSON.stringify(mockResult))).not.toBeNull();
+    expect(getByTestId('chatBot')).not.toBeNull();
   });
 
-  it('should show error when failing fetch', async () => {
+  it('should show onboardError when failing fetch', async () => {
+    fetchMock.get(ENDPOINT, 404);
+
+    const { getByTestId } = render(<App />);
+    await act(async () => {});
+
+    expect(getByTestId('onboardError')).not.toBeNull();
+  });
+
+  it('should show activity indicator while fetching', async () => {
     const mockResult = { status: 404, json: { text: 'error' } };
     fetchMock.get(ENDPOINT, mockResult);
 
-    const { getByText } = render(<App />);
+    const { getByTestId } = render(<App />);
+    expect(getByTestId('stillFetching')).not.toBeNull();
     await act(async () => {});
-
-    expect(getByText(JSON.stringify(mockResult))).not.toBeNull();
   });
 });

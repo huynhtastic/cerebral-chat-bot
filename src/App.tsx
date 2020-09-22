@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import {
-  // SafeAreaView,
-  // StyleSheet,
-  // ScrollView,
-  // View,
-  Text,
-  // StatusBar,
-} from 'react-native';
+import { ActivityIndicator, SafeAreaView } from 'react-native';
+import { ChatBot } from './components/ChatBot';
+import { OnboardError } from './components/OnboardError';
+
+import styles from './styles';
 
 type OnboardJson = Record<string, any> | null;
 
@@ -29,17 +26,25 @@ const App = (): React.ReactElement => {
     fetchOnboarding();
   }, []);
 
-  const renderFetchResponse = (): React.ReactElement => {
+  const renderFetchResult = (): React.ReactElement => {
     if (onboardJson === null) {
-      return <Text>Loading...</Text>;
+      return (
+        <SafeAreaView style={styles.loadingContainer}>
+          <ActivityIndicator
+            size="large"
+            testID="stillFetching"
+            color="#000fff"
+          />
+        </SafeAreaView>
+      );
     } else if (Object.keys(onboardJson).length === 0) {
-      return <Text>error</Text>;
+      return <OnboardError />;
     } else {
-      return <Text>{JSON.stringify(onboardJson)}</Text>;
+      return <ChatBot />;
     }
   };
 
-  return <>{renderFetchResponse()}</>;
+  return renderFetchResult();
 };
 
 export default App;

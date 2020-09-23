@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Button,
   FlatList,
@@ -35,6 +35,8 @@ export const ChatBot: React.FC<Props> = ({
   const [chatHistory, setChatHistory] = useState<Message[]>([]);
   const [currentPathIndex, setCurrentPathIndex] = useState(-2);
   const [isSessionTerminated, setIsSessionTerminated] = useState(false);
+
+  const chatHistoryRef = useRef<FlatList>(null);
 
   const addExchange = (botText: string): void => {
     const userMessage: Message = { sender: 'You', body: message };
@@ -107,23 +109,29 @@ export const ChatBot: React.FC<Props> = ({
           source={{ uri: 'https://i.redd.it/1y3vw360an031.png' }}
         />
         <Text testID="botName" style={styles.botName}>
-          Cerebral Bot
+          Cerebral
         </Text>
       </View>
       <FlatList
+        ref={chatHistoryRef}
         contentContainerStyle={styles.chatHistory}
         testID="chatHistory"
         renderItem={ChatMessage}
         data={chatHistory}
         ListEmptyComponent={renderEmptyList}
         keyExtractor={(_, index) => index.toString()}
+        onContentSizeChange={() =>
+          chatHistoryRef.current?.scrollToEnd({ animated: true })
+        }
       />
       <View style={styles.chatFooter}>
         <TextInput
           editable={!isSessionTerminated}
           value={message}
           testID="messageField"
+          style={styles.messageField}
           onChangeText={setMessage}
+          placeholder="Reply here..."
         />
         <Button
           disabled={message.length === 0 || isSessionTerminated}

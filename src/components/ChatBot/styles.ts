@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 const iconDim = 48;
 
 export default StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#eceff1' },
   botIcon: {
     width: iconDim,
     height: iconDim,
@@ -10,16 +11,23 @@ export default StyleSheet.create({
     marginRight: 8,
   },
   botName: {
-    textAlignVertical: 'bottom',
+    textAlignVertical: 'center',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
-  chatHistory: { marginVertical: 16, paddingBottom: 16 },
+  chatHistory: {
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    backgroundColor: 'white',
+    flexGrow: 1,
+  },
   chatFooter: {
     flexDirection: 'row',
   },
   chatHeader: {
+    padding: 16,
     flexDirection: 'row',
   },
-  container: { padding: 16, flex: 1 },
   emptyContainer: {
     flex: 1,
     backgroundColor: 'grey',
@@ -27,4 +35,5 @@ export default StyleSheet.create({
     justifyContent: 'center',
   },
   emptyText: { fontSize: 24, color: '#fff000' },
+  messageField: { paddingHorizontal: 16, flex: 1, backgroundColor: '#fce4ec' },
 });
